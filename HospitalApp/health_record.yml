@@ -1,0 +1,59 @@
+---
+ehr_version: 1.0.0
+demographics:
+  first_name: Albert
+  middle_name: 
+  last_name: Einstein
+  date_of_birth: March 14, 1879
+cholesterol_measurements:
+- date: March 4, 2013
+  hdl: 37
+  ldl: 57
+  total: 132
+  triglyceride: 433
+- date: March 5, 2013
+  hdl: 56
+  ldl: 45
+  total: 111
+  triglyceride: 500
+- date: March 6, 2013
+  hdl: 55
+  ldl: 52
+  total: 160
+  triglyceride: 555
+- date: March 10, 2013
+  hdl: 60
+  ldl: 50
+  total: 155
+  triglyceride: 507
+- date: !binary |-
+    MjAxMy0wNC0yNiAxMDoyNTo0OSAtMDUwMA==
+  hdl: 78
+  ldl: 99
+  total: 890
+  triglyceride: 99
+- date: !binary |-
+    MjAxMy0wNC0yNiAxMDo1ODoxNiAtMDUwMA==
+  hdl: 89
+  ldl: 890
+  total: 90
+  triglyceride: 90
+medications:
+- name: Tylenol
+  distributing_pharmacy:
+    name: Walgreens
+    address: 100 Walgreens Way
+    phone_number: 867-5309
+allergies:
+- name: pollen
+  reaction: sneezing
+- name: red dye
+  reaction: coughing
+- name: bears
+  reaction: scared
+vaccines:
+- name: Tetanus, diphtheria, & acellular pertussis
+  date_of_vaccination: June 9, 1887
+diagnoses:
+- ICD10_code: V9542XA
+  description: Spacecraft crash

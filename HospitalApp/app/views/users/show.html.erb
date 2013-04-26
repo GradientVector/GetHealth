@@ -11,6 +11,10 @@
 			<%= render "shared/stats" %>
 		</section>
 	</aside>
+	<div>
+		<%= button_to "Sync from HealthVault", { :action => "show", :id => @user.id },
+          :confirm => "Are you sure?", :method => :sync_from_healthvault %>
+	</div>
 	<div class="span8">
     <div id='chart'></div>
     <%= render_chart(@chart, 'chart') %>

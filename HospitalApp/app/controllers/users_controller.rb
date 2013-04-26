@@ -30,11 +30,8 @@ class UsersController < ApplicationController
 
 end
   
-  def show
-		@user = User.find(params[:id])
-		@microposts = @user.microposts.paginate(page: params[:page])
-    
-    # Data Chart for cholesterol
+  def sync_from_healthvault
+      # Data Chart for cholesterol
     data_table = GoogleVisualr::DataTable.new
     
     # Add Column Headers
@@ -50,6 +47,11 @@ end
 
     option = { width: 400, height: 240, title: 'Cholesterol' }
     @chart = GoogleVisualr::Interactive::AreaChart.new(data_table, option)
+  end
+  
+  def show
+		@user = User.find(params[:id])
+		@microposts = @user.microposts.paginate(page: params[:page])
 
   end
   

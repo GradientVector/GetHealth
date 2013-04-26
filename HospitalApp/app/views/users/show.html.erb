@@ -14,12 +14,21 @@
 	<div class="span8">
     <div id='chart'>Loading chart...</div>
     <%= render_chart(@chart, 'chart') %>
-    
-		<%= render "follow_form" if signed_in? %>
-    
     <div>
-      <%= button_to "Sync from HealthVault", { :action => "show", :id => @user.id },
-            :confirm => "Are you sure?", :method => :sync_from_healthvault %>
+		<% if current_user.admin? && !current_user?(@user) %>
+			<%= form_tag(add_cholesterol_measurement_path(@user.id), :method => "get") do %>
+				<%= label_tag :hdl, "HDL" %>
+				<%= text_field_tag :hdl %>
+				<%= label_tag :ldl, "LDL" %>
+				<%= text_field_tag :ldl %>
+				<%= label_tag :total %>
+				<%= text_field_tag :total %>
+				<%= label_tag :triglyceride %>
+				<%= text_field_tag :triglyceride %>
+				<%= submit_tag "Add Measurement", class: "btn btn-large btn-primary" %>
+			<% end %>
+			<%= link_to "Sync", sync_user_path(@user.id), data: { confirm: "Are you sure?" } %>
+		<% end %>
     </div>
 	</div>
 </div>

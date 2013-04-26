@@ -1,8 +1,8 @@
 class UsersController < ApplicationController
-	before_filter :signed_in_user, only: [:index, :edit, :update, :destroy, :following, :followers]
+	before_filter :signed_in_user, only: [:index, :edit, :update, :destroy, :following, :followers, :sync, :add_cholesterol_measurement]
 	before_filter :banned_action_for_signed_in_user, only: [:new, :create]
 	before_filter :correct_user, only: [:edit, :update]
-	before_filter :admin_user, only: :destroy
+	before_filter :admin_user, only: [:destroy, :sync, :add_cholesterol_measurement]
   
   def get_data_from_local_repository
     require 'ElectronicHealthRecord'
@@ -11,7 +11,7 @@ class UsersController < ApplicationController
     #ehr.load_file(@user.health_records.path)
     ehr.load_file(Rails.root.join('health_record_repo.yml'))
     
-    return ehr.cholesterol_measurements
+    return ehr
   end
   
   def get_data_from_api
@@ -54,18 +54,39 @@ class UsersController < ApplicationController
     data_table.new_column('number', 'Triglyceride')
 
     # Add Rows and Values
-    my_data = get_data_from_local_repository
+    my_data = get_data_from_local_repository.cholesterol_measurements
     data_table.add_rows(my_data)
 
     option = { width: 500, height: 240, title: 'Cholesterol' }
     @chart = GoogleVisualr::Interactive::AreaChart.new(data_table, option)
   end
   
+  def sync
+  
+  end
+  
+  def add_cholesterol_measurement
+  
+		@user = User.find(params[:id])
+  
+		ehr = get_data_from_local_repository
+        measurement = {"date" => Time.now.to_s,
+        "hdl" => params[:hdl].to_i,
+        "ldl" => params[:ldl].to_i,
+        "total" => params[:total].to_i,
+        "triglyceride" => params[:triglyceride].to_i}
+        ehr.hash["cholesterol_measurements"] << measurement
+		ehr.dump_file(Rails.root.join('health_record_repo.yml'))
+		
+		redirect_to (@user)
+  end
+  
   def show
 		@user = User.find(params[:id])
 		@microposts = @user.microposts.paginate(page: params[:page])
 
-    @chart = generate_cholesterol_chart
+		@chart = generate_cholesterol_chart
+		@cholesterol_measurement = EHR::CholesterolMeasurement.new
   end
   
   def new

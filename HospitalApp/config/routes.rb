@@ -17,6 +17,9 @@ SampleApp::Application.routes.draw do
   match "/help", to: "static_pages#help"
   match "/about", to: "static_pages#about"
   match "/contact", to: "static_pages#contact"
+  
+  match "user/:id/sync", to: "users#sync", as: :sync_user
+  match "user/:id/add_cholesterol_measurement", to: "users#add_cholesterol_measurement", as: :add_cholesterol_measurement
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

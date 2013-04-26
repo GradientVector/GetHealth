@@ -32,6 +32,12 @@ cholesterol_measurements:
   ldl: 99
   total: 890
   triglyceride: 99
+- date: !binary |-
+    MjAxMy0wNC0yNiAxMDo1ODoxNiAtMDUwMA==
+  hdl: 89
+  ldl: 890
+  total: 90
+  triglyceride: 90
 medications:
 - name: Tylenol
   distributing_pharmacy:

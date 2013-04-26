@@ -9,7 +9,7 @@ class UsersController < ApplicationController
     
     ehr = EHR::ElectronicHealthRecord.new
     #ehr.load_file(@user.health_records.path)
-    ehr.load_file(Rails.root.join('health_record_repo.yml'))
+    ehr.load_file(Rails.root.join('health_records').join('health_record_repo.yml'))
     
     return ehr
   end
@@ -71,7 +71,7 @@ class UsersController < ApplicationController
   end
   
   def sync_from_healthvault
-  
+    get_data_from_api
   end
   
   def generate_cholesterol_charts
@@ -122,13 +122,14 @@ class UsersController < ApplicationController
 		@user = User.find(params[:id])
   
 		ehr = get_data_from_local_repository
-        measurement = {"date" => Time.now.to_s,
-        "hdl" => params[:hdl].to_i,
-        "ldl" => params[:ldl].to_i,
-        "total" => params[:total].to_i,
-        "triglyceride" => params[:triglyceride].to_i}
-        ehr.hash["cholesterol_measurements"] << measurement
-		ehr.dump_file(Rails.root.join('health_record_repo.yml'))
+    measurement = {"date" => Time.now.to_s,
+    "hdl" => params[:hdl].to_i,
+    "ldl" => params[:ldl].to_i,
+    "total" => params[:total].to_i,
+    "triglyceride" => params[:triglyceride].to_i}
+    ehr.hash["cholesterol_measurements"] << measurement
+        
+		ehr.dump_file(Rails.root.join('health_records').join('health_record_repo.yml'))
 		
 		redirect_to (@user)
   end

@@ -118,7 +118,37 @@ class UsersController < ApplicationController
   end
   
   def sync
+    @user = User.find(params[:id])
   
+    require 'net/http'
+    require 'uri'
+    
+    cm = get_data_from_local_repository.cholesterol_measurements.last
+    
+    date = cm[0]
+    hdl = cm[1]
+    ldl = cm[2]
+    total = cm[3]
+    triglyceride = cm[4]
+    
+    apiUri = URI('http://seattle.geo.netio.ca/varcharmax/api/cholesterol_individual')
+    response = Net::HTTP::Post.new(apiUri.path)
+          response.content_type = ' application/x-www-form-urlencoded'
+          response.body = 
+          "=<ArrayOfCholesterol xmlns:i='http://www.w3.org/2001/XMLSchema-instance' xmlns='http://schemas.datacontract.org/2004/07/MvcApplication1'>
+            <Cholesterol>
+              <Date>#{date}</Date>
+              <HDL>#{hdl}</HDL>
+              <LDL>#{ldl}</LDL>
+              <TotalCholesterol>#{total}</TotalCholesterol>
+              <Triglyceride>#{triglyceride}</Triglyceride>
+            </Cholesterol>
+          </ArrayOfCholesterol>"
+
+    response = Net::HTTP.start(apiUri.host, apiUri.port) { |http| http.request(response) }
+    
+    flash[:success] = "Data synced"
+    redirect_to (@user)
   end
   
   def add_cholesterol_measurement
@@ -136,6 +166,7 @@ class UsersController < ApplicationController
 		ehr.dump_file(HEALTH_RECORD_FILE_PATH)
 		ehr.commit_changes(HEALTH_RECORD_DIR_PATH)
     
+    flash[:success] = "Cholesterol measurement added to local repository"
 		redirect_to (@user)
   end
   
@@ -143,7 +174,7 @@ class UsersController < ApplicationController
 		@user = User.find(params[:id])
 		@microposts = @user.microposts.paginate(page: params[:page])
 
-		@chart = generate_cholesterol_charts
+		generate_cholesterol_charts
 		@cholesterol_measurement = EHR::CholesterolMeasurement.new
   end
   

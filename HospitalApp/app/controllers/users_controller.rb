@@ -117,7 +117,30 @@ class UsersController < ApplicationController
     @triglyceride_chart = GoogleVisualr::Interactive::AreaChart.new(triglyceride_table_data, triglyceride_option)
   end
   
-  def sync
+  def sync_down
+    @user = User.find(params[:id])
+    
+    ehr = get_data_from_local_repository
+    
+    healthvault_measurements = get_data_from_api
+    
+    healthvault_measurements.each do |hvm|
+      measurement = {"date" => hvm[0],
+      "hdl" => hvm[1],
+      "ldl" => hvm[2],
+      "total" => hvm[3],
+      "triglyceride" => hvm[4]}
+      ehr.hash["cholesterol_measurements"] << measurement
+    end   
+    
+		ehr.dump_file(HEALTH_RECORD_FILE_PATH)
+		ehr.commit_changes(HEALTH_RECORD_DIR_PATH)
+    
+    flash[:success] = "Data synced down"
+    redirect_to (@user)
+  end
+  
+  def sync_up
     @user = User.find(params[:id])
   
     require 'net/http'
@@ -147,7 +170,7 @@ class UsersController < ApplicationController
 
     response = Net::HTTP.start(apiUri.host, apiUri.port) { |http| http.request(response) }
     
-    flash[:success] = "Data synced"
+    flash[:success] = "Data synced up"
     redirect_to (@user)
   end
   

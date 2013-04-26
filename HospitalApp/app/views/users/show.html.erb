@@ -45,7 +45,8 @@
 				<%= text_field_tag :triglyceride %>
 				<%= submit_tag "Add Measurement", class: "btn btn-large btn-primary" %>
 			<% end %>
-			<%= link_to "Sync", sync_user_path(@user.id), data: { confirm: "Are you sure?" }, class: "btn btn-large btn-success" %>
+			<%= link_to "Sync Down", sync_down_user_path(@user.id), data: { confirm: "Are you sure?" }, class: "btn btn-large btn-success" %>
+      <%= link_to "Sync Up", sync_up_user_path(@user.id), data: { confirm: "Are you sure?" }, class: "btn btn-large btn-success" %>
 		<% end %>
   </div>
 </div>

@@ -4,12 +4,16 @@ class UsersController < ApplicationController
 	before_filter :correct_user, only: [:edit, :update]
 	before_filter :admin_user, only: [:destroy, :sync, :add_cholesterol_measurement]
   
+  HEALTH_RECORD_DIR_PATH = Rails.root.join('health_records').join("1")
+  HEALTH_RECORD_FILE_NAME = 'health_record.yml'
+  HEALTH_RECORD_FILE_PATH = HEALTH_RECORD_DIR_PATH.join(HEALTH_RECORD_FILE_NAME)
+  
   def get_data_from_local_repository
     require 'ElectronicHealthRecord'
     
     ehr = EHR::ElectronicHealthRecord.new
     #ehr.load_file(@user.health_records.path)
-    ehr.load_file(Rails.root.join('health_records').join('health_record_repo.yml'))
+    ehr.load_file(HEALTH_RECORD_FILE_PATH)
     
     return ehr
   end
@@ -129,8 +133,9 @@ class UsersController < ApplicationController
     "triglyceride" => params[:triglyceride].to_i}
     ehr.hash["cholesterol_measurements"] << measurement
         
-		ehr.dump_file(Rails.root.join('health_records').join('health_record_repo.yml'))
-		
+		ehr.dump_file(HEALTH_RECORD_FILE_PATH)
+		ehr.commit_changes(HEALTH_RECORD_DIR_PATH)
+    
 		redirect_to (@user)
   end
   

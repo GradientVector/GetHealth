@@ -60,6 +60,12 @@ module EHR
       Psych.dump(@hash, file)
       file.close
     end
+    
+    def commit_changes(folder_name)
+      Dir.chdir(folder_name)
+      `git add .`
+      `git commit -m "Made changes to the health record."`
+    end
 
     def version
       @hash["ehr_version"]

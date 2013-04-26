@@ -1,0 +1,26 @@
+---
+ehr_version: 1.0.0
+demographics:  
+  first_name: Albert
+  middle_name:
+  last_name: Einstein
+  date_of_birth: March 14, 1879
+medications:
+- name: Tylenol
+  distributing_pharmacy: 
+    name: Walgreens
+    address: 100 Walgreens Way
+    phone_number: 867-5309
+allergies:
+- name: pollen
+  reaction: sneezing
+- name: red dye
+  reaction: coughing    
+- name: bears
+  reaction: scared
+vaccines:
+- name: Tetanus, diphtheria, & acellular pertussis       
+  date_of_vaccination: June 9, 1887
+diagnoses:
+- ICD10_code: V9542XA
+  description: Spacecraft crash

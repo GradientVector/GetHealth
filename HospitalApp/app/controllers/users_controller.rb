@@ -4,48 +4,60 @@ class UsersController < ApplicationController
 	before_filter :correct_user, only: [:edit, :update]
 	before_filter :admin_user, only: :destroy
   
+  def get_data_from_local_repository
+    require 'ElectronicHealthRecord'
+    
+    ehr = EHR::ElectronicHealthRecord.new
+    #ehr.load_file(@user.health_records.path)
+    ehr.load_file(Rails.root.join('health_record_repo.yml'))
+    
+    return ehr.cholesterol_measurements
+  end
+  
   def get_data_from_api
+    require 'net/http'
 
-	require 'net/http'
-	
-	apiUri = URI('http://seattle.geo.netio.ca/varcharmax/api/cholesterol_individual')
-	response = Net::HTTP.get(apiUri)
+    apiUri = URI('http://seattle.geo.netio.ca/varcharmax/api/cholesterol_individual')
+    response = Net::HTTP.get(apiUri)
 
-	require 'json'
-	jsonResponse = JSON.load(response)
+    require 'json'
+    jsonResponse = JSON.load(response)
 
-	myArray = []
+    myArray = []
 
-	jsonResponse.each do |j|
-		myDataRow = []
-		myDataRow << j["Date"].to_s
-		myDataRow << j["HDL"].to_i
-		myDataRow << j["LDL"].to_i
-		myDataRow << j["TotalCholesterol"].to_i
-		myDataRow << j["Triglyceride"].to_i
-		myArray << myDataRow
-	end
+    jsonResponse.each do |j|
+      myDataRow = []
+      myDataRow << j["Date"].to_s
+      myDataRow << j["HDL"].to_i
+      myDataRow << j["LDL"].to_i
+      myDataRow << j["TotalCholesterol"].to_i
+      myDataRow << j["Triglyceride"].to_i
+      myArray << myDataRow
+    end
 
-	return myArray
-
-end
+    return myArray
+  end
   
   def sync_from_healthvault
-      # Data Chart for cholesterol
+  
+  end
+  
+  def generate_cholesterol_chart
+    # Data Chart for cholesterol
     data_table = GoogleVisualr::DataTable.new
     
     # Add Column Headers
-    data_table.new_column('string', 'Year' )
-    data_table.new_column('number', 'Good Cholesterol')
-    data_table.new_column('number', 'Bad Cholesterol')
-	data_table.new_column('number', 'Total Cholesterol')
-	data_table.new_column('number', 'Triglyceride')
+    data_table.new_column('string', 'Date' )
+    data_table.new_column('number', 'HDL')
+    data_table.new_column('number', 'LDL')
+    data_table.new_column('number', 'Total Cholesterol')
+    data_table.new_column('number', 'Triglyceride')
 
     # Add Rows and Values
-	my_data = get_data_from_api
+    my_data = get_data_from_local_repository
     data_table.add_rows(my_data)
 
-    option = { width: 400, height: 240, title: 'Cholesterol' }
+    option = { width: 500, height: 240, title: 'Cholesterol' }
     @chart = GoogleVisualr::Interactive::AreaChart.new(data_table, option)
   end
   
@@ -53,6 +65,7 @@ end
 		@user = User.find(params[:id])
 		@microposts = @user.microposts.paginate(page: params[:page])
 
+    @chart = generate_cholesterol_chart
   end
   
   def new

@@ -11,11 +11,21 @@ cholesterol_measurements:
   ldl: 57  
   total: 132
   triglyceride: 433
-- date: March 4, 2013
-  hdl: 37
-  ldl: 57  
-  total: 132
-  triglyceride: 433
+- date: March 5, 2013
+  hdl: 56
+  ldl: 45 
+  total: 111
+  triglyceride: 500
+- date: March 6, 2013
+  hdl: 55
+  ldl: 52 
+  total: 160
+  triglyceride: 555
+- date: March 10, 2013
+  hdl: 60
+  ldl: 50 
+  total: 155
+  triglyceride: 507
 medications:
 - name: Tylenol
   distributing_pharmacy: 

@@ -65,33 +65,48 @@ module EHR
       @hash["ehr_version"]
     end
     
-    def demographics
-      @hash["demographics"]
+    # def demographics
+      # @hash["demographics"]
+    # end
+
+    def cholesterol_measurements
+      measurements = []
+      @hash["cholesterol_measurements"].each do |cm|
+        measurement = []
+        measurement << cm["date"]
+        measurement << cm["hdl"].to_i
+        measurement << cm["ldl"].to_i
+        measurement << cm["total"].to_i
+        measurement << cm["triglyceride"].to_i
+        measurements << measurement
+      end
+      
+      return measurements
     end
     
-    def assign_attributes_based_on_hash(yaml_hash)
-      yaml_hash.each do |record_type, record_value|
-        case record_type
-        when "demographics"
-          @demographics = Demographics.new
-          @demographics.first_name = record_value["first_name"]
-          @demographics.middle_name = record_value["middle_name"]
-          @demographics.last_name = record_value["last_name"]
-          @demographics.date_of_birth = record_value["date_of_birth"]
-        when "cholesterol_measurements"
-          @cholesterol_measurements = []
-          record_value.each do |field|
-            cm = CholesterolMeasurement.new
-            cm.date = field["date"]
-            cm.hdl = field["hdl"]
-            cm.ldl = field["ldl"]
-            cm.total = field["total"]
-            cm.triglyceride = field["triglyceride"]
-            @cholesterol_measurements << cm
-          end  
-        end
-      end  
-    end
+    # def assign_attributes_based_on_hash(yaml_hash)
+      # yaml_hash.each do |record_type, record_value|
+        # case record_type
+        # when "demographics"
+          # @demographics = Demographics.new
+          # @demographics.first_name = record_value["first_name"]
+          # @demographics.middle_name = record_value["middle_name"]
+          # @demographics.last_name = record_value["last_name"]
+          # @demographics.date_of_birth = record_value["date_of_birth"]
+        # when "cholesterol_measurements"
+          # @cholesterol_measurements = []
+          # record_value.each do |field|
+            # cm = CholesterolMeasurement.new
+            # cm.date = field["date"]
+            # cm.hdl = field["hdl"]
+            # cm.ldl = field["ldl"]
+            # cm.total = field["total"]
+            # cm.triglyceride = field["triglyceride"]
+            # @cholesterol_measurements << cm
+          # end  
+        # end
+      # end  
+    # end
     
   end
   

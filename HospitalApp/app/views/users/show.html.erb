@@ -1,6 +1,6 @@
 <% provide(:title, @user.name) %>
 <div class="row">
-	<aside class="span4">
+	<aside class="span3">
 		<section>
 			<h1>
 				<%= gravatar_for @user %>
@@ -11,10 +11,27 @@
 			<%= render "shared/stats" %>
 		</section>
 	</aside>
-	<div class="span8">
-    <div id='chart'>Loading chart...</div>
-    <%= render_chart(@chart, 'chart') %>
-    <div>
+	<div class="span9">
+    <div class="row">
+      <div class="span6">
+        <div id='hdl_chart'>Loading chart...
+          <%= render_chart(@hdl_chart, 'hdl_chart') %>
+        </div>
+        <div id='ldl_chart'>Loading chart...
+          <%= render_chart(@ldl_chart, 'ldl_chart') %>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="span6">
+        <div id='total_chart'>Loading chart...
+          <%= render_chart(@total_chart, 'total_chart') %>
+        </div>
+        <div id='triglyceride_chart'>Loading chart...
+          <%= render_chart(@triglyceride_chart, 'triglyceride_chart') %>
+        </div>
+      </div>
+    </div>
 		<% if signed_in? %>
       <h3>Enter new cholesterol measurement</h3>
 			<%= form_tag(add_cholesterol_measurement_path(@user.id), :method => "get") do %>
@@ -30,6 +47,5 @@
 			<% end %>
 			<%= link_to "Sync", sync_user_path(@user.id), data: { confirm: "Are you sure?" }, class: "btn btn-large btn-success" %>
 		<% end %>
-    </div>
-	</div>
+  </div>
 </div>

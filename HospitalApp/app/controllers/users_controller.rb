@@ -38,27 +38,79 @@ class UsersController < ApplicationController
     return myArray
   end
   
+  def get_hdl(array_of_cholesterol_measurements)
+    date_and_hdl = []
+    array_of_cholesterol_measurements.each do |cm|
+      date_and_hdl << [cm[0], cm[1]]
+    end
+    date_and_hdl
+  end
+  
+  def get_ldl(array_of_cholesterol_measurements)
+    date_and_ldl = []
+    array_of_cholesterol_measurements.each do |cm|
+      date_and_ldl << [cm[0], cm[2]]
+    end
+    date_and_ldl
+  end
+  
+  def get_total(array_of_cholesterol_measurements)
+    date_and_total = []
+    array_of_cholesterol_measurements.each do |cm|
+      date_and_total << [cm[0], cm[3]]
+    end
+    date_and_total
+  end
+  
+  def get_triglyceride(array_of_cholesterol_measurements)
+    date_and_triglyceride = []
+    array_of_cholesterol_measurements.each do |cm|
+      date_and_triglyceride << [cm[0], cm[4]]
+    end
+    date_and_triglyceride
+  end
+  
   def sync_from_healthvault
   
   end
   
-  def generate_cholesterol_chart
-    # Data Chart for cholesterol
-    data_table = GoogleVisualr::DataTable.new
-    
-    # Add Column Headers
-    data_table.new_column('string', 'Date' )
-    data_table.new_column('number', 'HDL')
-    data_table.new_column('number', 'LDL')
-    data_table.new_column('number', 'Total Cholesterol')
-    data_table.new_column('number', 'Triglyceride')
+  def generate_cholesterol_charts
+    # create data charts for cholesterol
 
     # Add Rows and Values
-    my_data = get_data_from_local_repository.cholesterol_measurements
-    data_table.add_rows(my_data)
+    cms = get_data_from_local_repository.cholesterol_measurements    
 
-    option = { width: 500, height: 240, title: 'Cholesterol' }
-    @chart = GoogleVisualr::Interactive::AreaChart.new(data_table, option)
+    # Add Column Headers
+    hdl_table_data = GoogleVisualr::DataTable.new
+    hdl_table_data.new_column('string', 'Date' )
+    hdl_table_data.new_column('number', 'HDL')
+    hdl_table_data.add_rows(get_hdl(cms))
+    hdl_option = { width: 600, height: 240, title: 'HDL' }
+    @hdl_chart = GoogleVisualr::Interactive::AreaChart.new(hdl_table_data, hdl_option)
+    
+    # Add Column Headers
+    ldl_table_data = GoogleVisualr::DataTable.new
+    ldl_table_data.new_column('string', 'Date' )
+    ldl_table_data.new_column('number', 'LDL')
+    ldl_table_data.add_rows(get_ldl(cms))
+    ldl_option = { width: 600, height: 240, title: 'LDL' }
+    @ldl_chart = GoogleVisualr::Interactive::AreaChart.new(ldl_table_data, ldl_option)
+    
+    # Add Column Headers
+    total_table_data = GoogleVisualr::DataTable.new
+    total_table_data.new_column('string', 'Date' )
+    total_table_data.new_column('number', 'Total Cholesterol')
+    total_table_data.add_rows(get_total(cms))
+    total_option = { width: 600, height: 240, title: 'Total' }
+    @total_chart = GoogleVisualr::Interactive::AreaChart.new(total_table_data, total_option)
+    
+    # Add Column Headers
+    triglyceride_table_data = GoogleVisualr::DataTable.new
+    triglyceride_table_data.new_column('string', 'Date' )
+    triglyceride_table_data.new_column('number', 'Triglyceride')
+    triglyceride_table_data.add_rows(get_triglyceride(cms))
+    triglyceride_option = { width: 600, height: 240, title: 'Triglyceride' }
+    @triglyceride_chart = GoogleVisualr::Interactive::AreaChart.new(triglyceride_table_data, triglyceride_option)
   end
   
   def sync
@@ -85,7 +137,7 @@ class UsersController < ApplicationController
 		@user = User.find(params[:id])
 		@microposts = @user.microposts.paginate(page: params[:page])
 
-		@chart = generate_cholesterol_chart
+		@chart = generate_cholesterol_charts
 		@cholesterol_measurement = EHR::CholesterolMeasurement.new
   end
   

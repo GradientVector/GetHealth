@@ -15,7 +15,8 @@
     <div id='chart'>Loading chart...</div>
     <%= render_chart(@chart, 'chart') %>
     <div>
-		<% if current_user.admin? && !current_user?(@user) %>
+		<% if signed_in? %>
+      <h3>Enter new cholesterol measurement</h3>
 			<%= form_tag(add_cholesterol_measurement_path(@user.id), :method => "get") do %>
 				<%= label_tag :hdl, "HDL" %>
 				<%= text_field_tag :hdl %>
@@ -27,7 +28,7 @@
 				<%= text_field_tag :triglyceride %>
 				<%= submit_tag "Add Measurement", class: "btn btn-large btn-primary" %>
 			<% end %>
-			<%= link_to "Sync", sync_user_path(@user.id), data: { confirm: "Are you sure?" } %>
+			<%= link_to "Sync", sync_user_path(@user.id), data: { confirm: "Are you sure?" }, class: "btn btn-large btn-success" %>
 		<% end %>
     </div>
 	</div>
